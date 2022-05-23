@@ -34,7 +34,7 @@ int main()
 
     // Setup a simple triangular waveform.
     MicroBitImage img("1 0 0 0 0 0 0 0 0 1\n0 1 0 0 0 0 0 0 1 0\n0 0 1 0 0 0 0 1 0 0\n0 0 0 1 0 0 1 0 0 0\n0 0 0 0 1 1 0 0 0 0\n");
-     
+         
     while(1)
         uBit.display.scroll(img, 80, -1);
 }
