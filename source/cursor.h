@@ -18,6 +18,8 @@ public:
     void bButtonDown(MicroBitEvent event);
     void bButtonUp(MicroBitEvent event);
 
+    void bButtonLongClick(MicroBitEvent event);
+
     void move(Point new_location);
     void offset(Point offset);
 
@@ -33,6 +35,8 @@ private:
     float timeBetweenMovements = 400;
 
     Player* currentPlayer;
+
+    bool longPressed = false;
 };
 
 #endif

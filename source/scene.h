@@ -9,6 +9,7 @@
 #include "MicroBit.h"
 
 class Object;
+class Widget;
 struct Point;
 
 class Scene
@@ -16,6 +17,32 @@ class Scene
 public:
     Scene(/* args */);
     ~Scene();
+
+    template<typename T>
+    T* createWidget()
+    {
+        T* newWidget = new T();
+        newWidget->setScene(this);
+        return newWidget;
+    }
+
+    void pushWidgetToViewport(Widget* widget)
+    {
+        widgets.push_back(widget);
+    }
+
+    void removeWidget()
+    {
+        widgets.pop_back();
+    }
+
+    Widget* getCurrentWidget() const
+    {
+        if(widgets.size() > 0)
+            return widgets[widgets.size() - 1];
+
+        return nullptr;
+    }
 
     template<typename T>
     T* spawnObject(const Point& location)
@@ -57,8 +84,13 @@ public:
         return newPiece;
     }
 
+    bool bShowingBoard = true;
+
 private:
+    void drawBoard();
+
     std::vector<Object*> objects;
+    std::vector<Widget*> widgets;
     bool dirty = false;
     MicroBit* uBit;
 };

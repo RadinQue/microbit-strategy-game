@@ -2,6 +2,8 @@
 
 #include "object.h"
 #include "fmath.h"
+#include "widgets/widget.h"
+#include "MicroBitImage.h"
 #include <algorithm>
 
 Scene::Scene(/* args */)
@@ -22,6 +24,33 @@ Scene::~Scene()
 void Scene::updateScene()
 {
     uBit->display.clear();
+
+    // if we have a widget, draw it.
+    // we always draw the last widget
+    // this way it's easy to implement sub menus
+    // that we can exit any time
+    if(widgets.size() > 0)
+    {
+        bShowingBoard = false;
+
+        uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
+
+        // do this when player 1's turn
+        // uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_180);
+
+        uBit->display.image.paste(widgets[widgets.size() - 1]->draw());
+
+        return;
+    }
+
+    drawBoard();
+}
+
+void Scene::drawBoard()
+{
+    bShowingBoard = true;
+
+    uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
 
     for (Object* object : objects)
     {
@@ -89,6 +118,11 @@ void Scene::tick()
     {
         obj->tick(sceneSpeed);
     }
+
+    for(Widget* wdg : widgets)
+    {
+        wdg->tick(sceneSpeed);
+    }
 }
 
 void Scene::destroyObject(Object* object)
@@ -96,11 +130,7 @@ void Scene::destroyObject(Object* object)
     if(!object)
         return;
 
-    uBit->serial.printf("Size before removal: %d\n", objects.size());
-
     objects.erase(std::remove(objects.begin(), objects.end(), object));
-
-    uBit->serial.printf("Size after removal: %d\n", objects.size());
 
     delete object;
 

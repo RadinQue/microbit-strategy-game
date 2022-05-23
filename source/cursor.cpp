@@ -2,6 +2,7 @@
 #include "fmath.h"
 #include "scene.h"
 #include "piece.h"
+#include "widgets/w_piece_info.h"
 #include "MicroBit.h"
 
 #define MOVEMENT_THRESHOLD 10
@@ -13,28 +14,55 @@ Cursor::Cursor(Point location, Scene* scene)
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_UP, this, &Cursor::aButtonUp);
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, this, &Cursor::bButtonDown);
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_UP, this, &Cursor::bButtonUp);
+    scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_HOLD, this, &Cursor::bButtonLongClick);
 
     // SETUP
     this->scene = scene;
     this->location = location;
     opacity = 32;
     zOrder = 1;
+    longPressed = false;
 }
 
 void Cursor::aButtonDown(MicroBitEvent event)
 {
-    opacity = 255;
-    scene->updateScene();
 }
 
 void Cursor::aButtonUp(MicroBitEvent event)
 {
-    opacity = 32;
-    scene->updateScene();
+    if(!scene->bShowingBoard)
+    {
+        if(Widget* currWidget = scene->getCurrentWidget())
+        {
+            currWidget->onBack();
+        }
+
+        return;
+    }
 }
 
 void Cursor::bButtonDown(MicroBitEvent event)
 {
+}
+
+void Cursor::bButtonUp(MicroBitEvent event)
+{
+    if(longPressed)
+    {
+        longPressed = false;
+        return;
+    }
+
+    if(!scene->bShowingBoard)
+    {
+        if(Widget* currWidget = scene->getCurrentWidget())
+        {
+            currWidget->onSelect();
+        }
+
+        return;
+    }
+
     FCastQuery castQuery;
     castQuery.filteredObjects.push_back(this);
 
@@ -44,9 +72,32 @@ void Cursor::bButtonDown(MicroBitEvent event)
     }
 }
 
-void Cursor::bButtonUp(MicroBitEvent event)
+void Cursor::bButtonLongClick(MicroBitEvent event)
 {
+    longPressed = true;
 
+    if(!scene->bShowingBoard)
+    {
+        if(Widget* currWidget = scene->getCurrentWidget())
+        {
+            currWidget->onLongSelect();
+        }
+
+        return;
+    }
+
+    WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
+
+    FCastQuery castQuery;
+    castQuery.filteredObjects.push_back(this);
+    if(Object* foundObject = scene->getObjectAtLocation(location, castQuery))
+    {
+        if(Piece* piece = static_cast<Piece*>(foundObject))
+        {
+            infoWidget->init(piece);
+            infoWidget->pushToViewport();
+        }
+    }
 }
 
 void Cursor::move(Point new_location)
@@ -80,6 +131,9 @@ void Cursor::handleMovement()
 void Cursor::tick(int deltaTime)
 {
     Object::tick(deltaTime);
+
+    if(!scene->bShowingBoard)
+        return;
 
     elapsedTime += deltaTime;
     if(elapsedTime >= timeBetweenMovements)

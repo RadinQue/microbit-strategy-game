@@ -9,6 +9,7 @@ public:
     Pawn(const Point& location, Scene* scene);
 
     virtual bool canMoveAtLocation(const Point& location) override;
+    virtual MicroBitImage classImage() override;
 
 private:
 };
