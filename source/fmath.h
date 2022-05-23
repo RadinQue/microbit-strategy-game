@@ -2,11 +2,18 @@
 #define FMATH_H
 
 #include <algorithm>
+#include <cmath>
 
 template <class _Tx>
 inline _Tx s_clamp(const _Tx& x, const _Tx& min, const _Tx& max)
 {
 	return std::min(std::max(x, min), max);
+}
+
+template<class _Tx>
+inline _Tx sqr(const _Tx& x)
+{
+	return x * x;
 }
 
 struct Point
@@ -50,6 +57,11 @@ struct Point
     int x;
     int y;
 };
+
+float inline dist(const Point& P1, const Point& P2)
+{
+	return sqrt(sqr(P2.x - P1.x) + sqr(P2.y - P1.y));
+}
 
 
 #endif

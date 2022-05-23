@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "vector": "cpp",
+        "xmemory": "cpp"
     }
 }

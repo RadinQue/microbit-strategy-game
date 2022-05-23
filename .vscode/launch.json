@@ -25,8 +25,8 @@
             },
             "windows": {
                 "MIMode": "gdb",
-                "MIDebuggerPath": "D:\\dev\\ARM-Embedded GCC\\4.9 2015q2\\bin\\arm-none-eabi-gdb.exe",
-                "debugServerPath": "C:\\yotta\\workspace\\Scripts\\pyocd-gdbserver.exe",
+                "miDebuggerPath": "D:\\dev\\ARM-Embedded GCC\\4.9 2015q2\\bin\\arm-none-eabi-gdb.exe",
+                "debugServerPath": "C:\\Users\\drang\\AppData\\Local\\Programs\\Python\\Python38\\Scripts\\pyocd-gdbserver.exe",
                 "debugServerArgs": "--persist -t nrf51 -bh -r",
                 "setupCommands": [
                     { "text": "-environment-cd ${workspaceRoot}\\build\\bbc-microbit-classic-gcc\\source" },
