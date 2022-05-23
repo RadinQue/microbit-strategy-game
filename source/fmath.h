@@ -37,6 +37,11 @@ struct Point
 		return Point(scalar * x, scalar * y);
 	}
 
+	bool operator==(const Point& rhs)
+	{
+		return rhs.x == x && rhs.y == y;
+	}
+
 	static Point clamp_screen(const Point& point)
 	{
 		return Point(s_clamp<int>(point.x, 0, 4), s_clamp<int>(point.y, 0, 4));
