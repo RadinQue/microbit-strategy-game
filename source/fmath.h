@@ -22,7 +22,7 @@ struct Point
 	{
 	}
 
-    Point(int x, int y)
+    Point(int8_t x, int8_t y)
         : x(x)
         , y(y)
     {
@@ -34,28 +34,35 @@ struct Point
     {
     }
 
-	Point operator+(const Point& rhs)
+	Point operator+(const Point& rhs) const
 	{
 		return Point(rhs.x + x, rhs.y + y);
 	}
 
-	Point operator*(const int& scalar)
+	Point& operator+=(const Point& rhs)
+	{
+		x += rhs.x;
+		y += rhs.y;
+		return *this;
+	}
+
+	Point operator*(const int& scalar) const
 	{
 		return Point(scalar * x, scalar * y);
 	}
 
-	bool operator==(const Point& rhs)
+	bool operator==(const Point& rhs) const
 	{
 		return rhs.x == x && rhs.y == y;
 	}
 
 	static Point clamp_screen(const Point& point)
 	{
-		return Point(s_clamp<int>(point.x, 0, 4), s_clamp<int>(point.y, 0, 4));
+		return Point(s_clamp<int8_t>(point.x, 0, 4), s_clamp<int8_t>(point.y, 0, 4));
 	}
 
-    int x;
-    int y;
+    int8_t x;
+	int8_t y;
 };
 
 float inline dist(const Point& P1, const Point& P2)

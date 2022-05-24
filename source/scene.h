@@ -9,6 +9,7 @@
 #include "MicroBit.h"
 
 class Object;
+class Piece;
 class Widget;
 struct Point;
 
@@ -51,15 +52,25 @@ public:
             return nullptr;
         
         T* newObject = new T(location, this);
-
         objects.push_back(newObject);
+
+        newObject->start();
 
         updateScene();
 
         return newObject;
     }
 
+    Player* createPlayer(ESide side)
+    {
+        Player* newPlayer = new Player(this, side);
+        players.push_back(newPlayer);
+
+        return newPlayer;
+    }
+
     void destroyObject(Object* object);
+    void destroyPiece(Piece* piece);
 
     std::vector<Object*> getObjects() const { return objects; }
 
@@ -80,19 +91,30 @@ public:
     T* grantPlayerPiece(const Point& location, Player* player)
     {
         T* newPiece = spawnObject<T>(location);
+
+        newPiece->setOwner(player);
+
         player->addPiece(newPiece);
         return newPiece;
     }
 
+    void setCursor(class Cursor* newCursor) { cursor = newCursor; }
+    Cursor* getCursor() const { return cursor; }
+
     bool bShowingBoard = true;
+
+    void switchTurnFrom(Player* currentPlayer);
 
 private:
     void drawBoard();
 
     std::vector<Object*> objects;
     std::vector<Widget*> widgets;
+    std::vector<Player*> players;
     bool dirty = false;
     MicroBit* uBit;
+
+    Cursor* cursor;
 };
 
 

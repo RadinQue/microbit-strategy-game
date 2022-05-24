@@ -6,6 +6,7 @@
 
 enum EPage
 {
+    Owner,
     Rank,
     PowerInfo,
     StatusEffects,
@@ -24,7 +25,7 @@ inline EPage& operator++(EPage& Other)
 
 inline EPage& operator--(EPage& Other)
 {
-    if(Other == EPage::Rank)
+    if(Other == EPage::Owner)
         return Other;
 
     using IntType = typename std::underlying_type<EPage>::type;

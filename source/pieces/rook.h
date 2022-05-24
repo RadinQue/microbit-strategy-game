@@ -1,19 +1,18 @@
-#ifndef PAWN_H
-#define PAWN_H
+#ifndef ROOK_H
+#define ROOK_H
 
 #include "../piece.h"
 
-class Pawn : public Piece
+class Rook : public Piece
 {
 public:
-    Pawn(const Point& location, Scene* scene);
+    Rook(const Point& location, Scene* scene);
 
     virtual bool canMoveAtLocation(const Point& location) override;
     virtual MicroBitImage classImage() override;
 
-    virtual void start() override;
-
 private:
 };
+
 
 #endif

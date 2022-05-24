@@ -14,6 +14,7 @@ public:
     virtual void onSelect() {}
     virtual void onLongSelect() {}
     virtual void onBack() {}
+    virtual void onLongBack() {}
     void setScene(Scene* newScene) { scene = newScene; }
 
     void pushToViewport();
