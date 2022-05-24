@@ -19,9 +19,7 @@ public:
     void bButtonUp(MicroBitEvent event);
 
     void bButtonLongClick(MicroBitEvent event);
-
-    void move(Point new_location);
-    void offset(Point offset);
+    void aButtonLongClick(MicroBitEvent event);
 
     class Player* getCurrentPlayer() const { return currentPlayer; }
     void setCurrentPlayer(Player* newPlayer) { currentPlayer = newPlayer; }

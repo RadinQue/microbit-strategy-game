@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\source"
+    "\\source",
+    "\\yotta_targets"
   ],
-  "SelectedNode": "\\source\\main.cpp",
+  "SelectedNode": "\\yotta_targets\\mbed-gcc",
   "PreviewInSolutionExplorer": false
 }

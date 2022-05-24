@@ -4,6 +4,8 @@
 #include "fmath.h"
 #include "widgets/widget.h"
 #include "MicroBitImage.h"
+#include "cursor.h"
+#include "piece.h"
 #include <algorithm>
 
 Scene::Scene(/* args */)
@@ -36,7 +38,8 @@ void Scene::updateScene()
         uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
 
         // do this when player 1's turn
-        // uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_180);
+        if(cursor->getCurrentPlayer()->side == ESide::Port)
+            uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_180);
 
         uBit->display.image.paste(widgets[widgets.size() - 1]->draw());
 
@@ -49,6 +52,8 @@ void Scene::updateScene()
 void Scene::drawBoard()
 {
     bShowingBoard = true;
+
+    uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_0);
 
     uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
 
@@ -135,4 +140,25 @@ void Scene::destroyObject(Object* object)
     delete object;
 
     updateScene();
+}
+
+void Scene::destroyPiece(Piece* piece)
+{
+    if(!piece)
+        return;
+
+    piece->getOwner()->removePiece(piece);
+    destroyObject(piece);
+}
+
+void Scene::switchTurnFrom(Player* currentPlayer)
+{
+    for (Player* player : players)
+    {
+        if(player != currentPlayer)
+        {
+            cursor->setCurrentPlayer(player);
+            return;
+        }
+    }
 }

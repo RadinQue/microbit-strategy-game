@@ -15,6 +15,7 @@ Cursor::Cursor(Point location, Scene* scene)
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, this, &Cursor::bButtonDown);
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_UP, this, &Cursor::bButtonUp);
     scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_HOLD, this, &Cursor::bButtonLongClick);
+    scene->getUBit()->messageBus.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_HOLD, this, &Cursor::aButtonLongClick);
 
     // SETUP
     this->scene = scene;
@@ -30,15 +31,16 @@ void Cursor::aButtonDown(MicroBitEvent event)
 
 void Cursor::aButtonUp(MicroBitEvent event)
 {
-    if(!scene->bShowingBoard)
+    if(longPressed)
     {
-        if(Widget* currWidget = scene->getCurrentWidget())
-        {
-            currWidget->onBack();
-        }
-
+        longPressed = false;
         return;
     }
+
+    if(!currentPlayer)
+        return;
+
+    currentPlayer->onButtonA();
 }
 
 void Cursor::bButtonDown(MicroBitEvent event)
@@ -53,61 +55,30 @@ void Cursor::bButtonUp(MicroBitEvent event)
         return;
     }
 
-    if(!scene->bShowingBoard)
-    {
-        if(Widget* currWidget = scene->getCurrentWidget())
-        {
-            currWidget->onSelect();
-        }
-
+    if(!currentPlayer)
         return;
-    }
 
-    FCastQuery castQuery;
-    castQuery.filteredObjects.push_back(this);
-
-    if(Object* foundObject = scene->getObjectAtLocation(location, castQuery))
-    {
-        foundObject->destroy();
-    }
+    currentPlayer->onButtonB();
 }
 
 void Cursor::bButtonLongClick(MicroBitEvent event)
 {
     longPressed = true;
 
-    if(!scene->bShowingBoard)
-    {
-        if(Widget* currWidget = scene->getCurrentWidget())
-        {
-            currWidget->onLongSelect();
-        }
-
+    if(!currentPlayer)
         return;
-    }
 
-    WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
-
-    FCastQuery castQuery;
-    castQuery.filteredObjects.push_back(this);
-    if(Object* foundObject = scene->getObjectAtLocation(location, castQuery))
-    {
-        if(Piece* piece = static_cast<Piece*>(foundObject))
-        {
-            infoWidget->init(piece);
-            infoWidget->pushToViewport();
-        }
-    }
+    currentPlayer->onLongButtonB();
 }
 
-void Cursor::move(Point new_location)
+void Cursor::aButtonLongClick(MicroBitEvent event)
 {
-    location = Point::clamp_screen(new_location);
-}
+    longPressed = true;
 
-void Cursor::offset(Point offset)
-{
-    location = Point::clamp_screen(location + offset);
+    if(!currentPlayer)
+        return;
+
+    currentPlayer->onLongButtonA();
 }
 
 void Cursor::handleMovement()

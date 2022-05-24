@@ -1,19 +1,30 @@
 #include "pawn.h"
 #include "MicroBitImage.h"
 
+
+
+
 Pawn::Pawn(const Point& location, Scene* scene)
 {
     this->scene = scene;
     this->location = location;
 
-    health = 6;
-    magic = 9;
+    maxHealth = 6;
+    maxAttack = 9;
+}
+
+void Pawn::start()
+{
+    Piece::start();
+
 }
 
 bool Pawn::canMoveAtLocation(const Point& location)
 {
+    possibleMoves.clear();
+    possibleMoves.push_back(getLocation() + getForwardVector());
 
-    return true;
+    return Piece::canMoveAtLocation(location);
 }
 
 MicroBitImage Pawn::classImage()

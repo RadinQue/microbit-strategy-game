@@ -11,6 +11,8 @@ public:
     virtual bool canMoveAtLocation(const Point& location) override;
     virtual MicroBitImage classImage() override;
 
+    virtual void start() override;
+
 private:
 };
 
