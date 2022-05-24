@@ -33,6 +33,8 @@ void Player::onButtonA()
 
     if(side == ESide::Pins)
     {
+        if(pickedUpPiece)
+            dropPiece();
     }
     else
     {
@@ -138,6 +140,8 @@ void Player::onButtonB()
     }
     else
     {
+        if(pickedUpPiece)
+            dropPiece();
     }
 }
 
@@ -224,7 +228,7 @@ void Player::pickUpPiece(Piece* pieceToPickUp)
 
     if(pieceToPickUp->getOwner() != this)
         return;
-        
+
     pieceToPickUp->setVisibility(false);
     pickedUpPiece = pieceToPickUp;
 }
