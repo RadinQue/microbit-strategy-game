@@ -27,6 +27,7 @@ public:
     void handleMovement();
 
     virtual void tick(int deltaTime) override;
+    virtual EMessageType getMessageType() override { return EMessageType::EMT_Cursor; };
 
 private:
     int elapsedTime = 0;

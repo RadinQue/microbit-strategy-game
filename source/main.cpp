@@ -11,7 +11,7 @@ int main()
     Scene* scene = new Scene();
     Cursor* cursor = scene->spawnObject<Cursor>(Point(2, 2));
     scene->setCursor(cursor);
-    scene->getUBit()->display.setBrightness(64);
+    // scene->getUBit()->display.setBrightness(64);
 
     Player* P1 = scene->createPlayer(ESide::Pins);
     Player* P2 = scene->createPlayer(ESide::Port);

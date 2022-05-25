@@ -14,12 +14,11 @@ Rook::Rook(const Point& location, Scene* scene)
     maxAttack = 2;
 }
 
-bool Rook::canMoveAtLocation(const Point& location)
+void Rook::calculatePossibleMoves()
 {
     possibleMoves.clear();
     for (int8_t i = 1; i <= 4; ++i)
     {
-        scene->getUBit()->serial.printf("%d", i);
         // vertical
         possibleMoves.push_back(getLocation() + (getForwardVector() * i));
         possibleMoves.push_back(getLocation() + (getForwardVector() * -i));
@@ -28,8 +27,6 @@ bool Rook::canMoveAtLocation(const Point& location)
         possibleMoves.push_back(getLocation() + (getRightVector() * i));
         possibleMoves.push_back(getLocation() + (getRightVector() * -i));
     }
-    
-    return Piece::canMoveAtLocation(location);
 }
 
 MicroBitImage Rook::classImage()

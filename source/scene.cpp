@@ -6,7 +6,7 @@
 #include "MicroBitImage.h"
 #include "cursor.h"
 #include "piece.h"
-#include "widgets/popup_widget.h"
+#include "widgets/popup_widgets/w_arrow_popup.h"
 #include <algorithm>
 
 Scene::Scene(/* args */)
@@ -41,7 +41,9 @@ void Scene::updateScene()
         uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
 
         // do this when player 1's turn
-        if(cursor->getCurrentPlayer()->side == ESide::Port)
+        // and the widgets asks
+        if(cursor->getCurrentPlayer()->side == ESide::Port &&
+            widgets[widgets.size() - 1]->RotateToFacePlayer())
             uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_180);
 
         uBit->display.image.paste(widgets[widgets.size() - 1]->draw());
@@ -65,14 +67,15 @@ void Scene::drawBoard()
     {
         Point location = object->getLocation();
 
-        std::vector<Object*> objectsAtLocation = getObjectsAtLocation(location);
-        Object* highestZOrderObject = object;
-        for(Object* zOrderTest : objectsAtLocation)
-        {
-            if(zOrderTest->getZOrder() > highestZOrderObject->getZOrder())
-                highestZOrderObject = zOrderTest;
-        }
-        int opacity = highestZOrderObject->getOpacity();
+        // std::vector<Object*> objectsAtLocation = getObjectsAtLocation(location);
+        // Object* highestZOrderObject = object;
+        // for(Object* zOrderTest : objectsAtLocation)
+        // {
+        //     if(zOrderTest->getZOrder() > highestZOrderObject->getZOrder())
+        //         highestZOrderObject = zOrderTest;
+        // }
+        // int opacity = highestZOrderObject->getOpacity();
+        int opacity = uBit->display.image.getPixelValue(location.x, location.y) + object->getOpacity();
 
         uBit->display.image.setPixelValue(location.x, location.y, opacity);
     }
@@ -115,6 +118,17 @@ Object* Scene::getObjectAtLocation(const Point& location, FCastQuery castQuery) 
             continue;
 
         if(obj->getLocation() == location)
+            return obj;
+    }
+
+    return nullptr;
+}
+
+Object* Scene::getObjectAtLocationOfType(const Point& location, EMessageType type) const
+{
+    for (Object* obj : objects)
+    {
+        if(obj->getLocation() == location && obj->getMessageType() == type)
             return obj;
     }
 
@@ -174,15 +188,10 @@ void Scene::switchTurnFrom(Player* currentPlayer)
         {
             cursor->setCurrentPlayer(player);
 
-            PopupWidget* myWidget = createWidget<PopupWidget>();
+            WArrowPopup* myWidget = createWidget<WArrowPopup>();
             myWidget->setDuration(1500);
             myWidget->pushToViewport();
             return;
         }
     }
-}
-
-void Scene::switchTurn()
-{
-    uBit->serial.printf("Callback worked\r\n");
 }

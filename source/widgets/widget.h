@@ -18,6 +18,8 @@ public:
     virtual void onLongBack() {}
     void setScene(Scene* newScene) { scene = newScene; }
 
+    virtual bool RotateToFacePlayer() const { return true; }
+
     virtual void pushToViewport();
     void removeFromViewport();
 

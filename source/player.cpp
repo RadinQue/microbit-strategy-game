@@ -230,6 +230,7 @@ void Player::pickUpPiece(Piece* pieceToPickUp)
 
     pieceToPickUp->setVisibility(false);
     pickedUpPiece = pieceToPickUp;
+    pickedUpPiece->spawnMoveIndicators();
 }
 
 bool Player::tryPutPiece(const Point& location)
@@ -248,19 +249,13 @@ bool Player::tryPutPiece(const Point& location)
     if(!pickedUpPiece->canMoveAtLocation(location))
         return false;
 
-    FCastQuery castQuery;
-    castQuery.filteredObjects.push_back(scene->getCursor());
-
-    Object* foundObject = scene->getObjectAtLocation(location, castQuery);
-    if(foundObject)
+    Piece* foundPiece = static_cast<Piece*>(scene->getObjectAtLocationOfType(location, EMessageType::EMT_Piece));
+    if(foundPiece)
     {
-        if(Piece* foundPiece = static_cast<Piece*>(foundObject))
+        if(foundPiece->getOwner() != pickedUpPiece->getOwner())
         {
-            if(foundPiece->getOwner() != pickedUpPiece->getOwner())
-            {
-                combatPieces(pickedUpPiece, foundPiece);
-                return true;
-            }
+            combatPieces(pickedUpPiece, foundPiece);
+            return true;
         }
 
         return false;
@@ -277,6 +272,7 @@ void Player::putPiece(const Point& location)
         
     pickedUpPiece->move(location);
     pickedUpPiece->setVisibility(true);
+    pickedUpPiece->destroyMoveIndicators();
     pickedUpPiece = nullptr;
 }
 
@@ -286,6 +282,7 @@ void Player::dropPiece()
         return;
         
     pickedUpPiece->setVisibility(true);
+    pickedUpPiece->destroyMoveIndicators();
     pickedUpPiece = nullptr;
 }
 

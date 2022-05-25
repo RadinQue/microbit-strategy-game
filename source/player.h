@@ -7,7 +7,7 @@
 // this whole side thing was a bad idea and
 // now i regret everything
 // refactor if you can please
-enum ESide
+enum ESide : uint8_t
 {
     Pins,
     Port

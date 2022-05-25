@@ -20,7 +20,7 @@ Cursor::Cursor(Point location, Scene* scene)
     // SETUP
     this->scene = scene;
     this->location = location;
-    opacity = 16;
+    opacity = 128;
     zOrder = 1;
     longPressed = false;
 }

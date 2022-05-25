@@ -19,12 +19,10 @@ void Pawn::start()
 
 }
 
-bool Pawn::canMoveAtLocation(const Point& location)
+void Pawn::calculatePossibleMoves()
 {
     possibleMoves.clear();
     possibleMoves.push_back(getLocation() + getForwardVector());
-
-    return Piece::canMoveAtLocation(location);
 }
 
 MicroBitImage Pawn::classImage()

@@ -1,6 +1,7 @@
 #include "piece.h"
 #include "player.h"
 #include "scene.h"
+#include "movement_indicator.h"
 
 Piece::Piece(const Point& location, Scene* scene)
 {
@@ -10,6 +11,8 @@ Piece::Piece(const Point& location, Scene* scene)
 
 bool Piece::canMoveAtLocation(const Point& location)
 {
+    calculatePossibleMoves();
+
     for (Point loc : possibleMoves)
     {
         if(location == loc)
@@ -57,4 +60,26 @@ void Piece::dealDamage(Piece* target)
 void Piece::onDamageReceived(int dmg, Piece* instigator/* = nullptr*/)
 {
     health -= dmg;
+}
+
+void Piece::spawnMoveIndicators()
+{
+    calculatePossibleMoves();
+    for(const Point& loc : possibleMoves)
+    {
+        MovementIndicator* newObj = scene->spawnObject<MovementIndicator>(loc);
+        newObj->setOpacity(8);
+        moveIndicators.push_back(newObj);
+    }
+}
+
+void Piece::destroyMoveIndicators()
+{
+    for(MovementIndicator* obj : moveIndicators)
+    {
+        if(obj)
+            obj->destroy();
+    }
+
+    moveIndicators.clear();
 }

@@ -8,7 +8,7 @@ class Pawn : public Piece
 public:
     Pawn(const Point& location, Scene* scene);
 
-    virtual bool canMoveAtLocation(const Point& location) override;
+    virtual void calculatePossibleMoves() override;
     virtual MicroBitImage classImage() override;
 
     virtual void start() override;

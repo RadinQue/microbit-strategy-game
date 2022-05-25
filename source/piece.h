@@ -14,6 +14,11 @@ public:
     Piece(const Point& location, Scene* scene);
 
     virtual bool canMoveAtLocation(const Point& location);
+    virtual void calculatePossibleMoves() = 0;
+
+    void spawnMoveIndicators();
+    void destroyMoveIndicators();
+
     virtual MicroBitImage classImage() = 0;
 
     virtual void start() override;
@@ -33,6 +38,8 @@ public:
     void setOwner(class Player* player) { owner = player; }
     Player* getOwner() const { return owner; }
 
+    virtual EMessageType getMessageType() override { return EMessageType::EMT_Piece; };
+
 protected:
     int8_t health;
     int8_t attack;
@@ -43,6 +50,7 @@ protected:
     Player* owner;
 
     std::vector<Point> possibleMoves;
+    std::vector<class MovementIndicator*> moveIndicators;
 
 };
 

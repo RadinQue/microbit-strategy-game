@@ -73,9 +73,6 @@ public:
     template<typename T>
     T* spawnObject(const Point& location)
     {
-        if(spaceOccupied(location))
-            return nullptr;
-        
         T* newObject = new T(location, this);
         objects.push_back(newObject);
 
@@ -102,6 +99,7 @@ public:
     bool spaceOccupied(const Point& location, FCastQuery castQuery = FCastQuery()) const;
     std::vector<Object*> getObjectsAtLocation(const Point& location, FCastQuery castQuery = FCastQuery()) const;
     Object* getObjectAtLocation(const Point& location, FCastQuery castQuery = FCastQuery()) const;
+    Object* getObjectAtLocationOfType(const Point& location, EMessageType type) const;
 
     void updateScene();
     bool isDirty() const { return dirty; }
@@ -130,7 +128,6 @@ public:
     EInputTarget InputTarget;
 
     void switchTurnFrom(Player* currentPlayer);
-    void switchTurn();
 
 private:
     void drawBoard();

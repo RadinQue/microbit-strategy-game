@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "fmath.h"
+#include "types/message_types.h"
 
 class Object
 {
@@ -27,9 +28,11 @@ public:
 
     virtual void destroy();
 
+    virtual EMessageType getMessageType() { return EMessageType::EMT_Object; };
+
 protected:
     Point location;
-    uint8_t opacity = 255;
+    uint8_t opacity = 16;
     uint8_t zOrder = 0;
     Scene* scene;
 

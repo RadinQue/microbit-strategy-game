@@ -8,7 +8,7 @@ class Rook : public Piece
 public:
     Rook(const Point& location, Scene* scene);
 
-    virtual bool canMoveAtLocation(const Point& location) override;
+    virtual void calculatePossibleMoves() override;
     virtual MicroBitImage classImage() override;
 
 private:

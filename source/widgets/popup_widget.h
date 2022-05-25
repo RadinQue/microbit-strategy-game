@@ -36,7 +36,7 @@ public:
     virtual void tick(int deltaTime) override;
     virtual void pushToViewport() override;
 
-private:
+protected:
     bool ticking = false;
 
     int duration;
