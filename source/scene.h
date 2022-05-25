@@ -13,6 +13,13 @@ class Piece;
 class Widget;
 struct Point;
 
+enum class EInputTarget : uint8_t
+{
+    EIT_Board,
+    EIT_Widgets,
+    EIT_None
+};
+
 class Scene
 {
 public:
@@ -27,6 +34,22 @@ public:
         return newWidget;
     }
 
+    template<typename T, typename Obj>
+    T* createPopupWidget(int duration, Obj* object, void (Obj::*handler)())
+    {
+        T* newWidget = new T(duration, object, handler);
+        newWidget->setScene(this);
+        return newWidget;
+    }
+
+    template<typename T>
+    T* createPopupWidget(int duration)
+    {
+        T* newWidget = new T(duration);
+        newWidget->setScene(this);
+        return newWidget;
+    }
+
     void pushWidgetToViewport(Widget* widget)
     {
         widgets.push_back(widget);
@@ -36,6 +59,8 @@ public:
     {
         widgets.pop_back();
     }
+
+    void removeWidgetFromViewport(Widget* widget);
 
     Widget* getCurrentWidget() const
     {
@@ -102,8 +127,10 @@ public:
     Cursor* getCursor() const { return cursor; }
 
     bool bShowingBoard = true;
+    EInputTarget InputTarget;
 
     void switchTurnFrom(Player* currentPlayer);
+    void switchTurn();
 
 private:
     void drawBoard();

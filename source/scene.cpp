@@ -6,6 +6,7 @@
 #include "MicroBitImage.h"
 #include "cursor.h"
 #include "piece.h"
+#include "widgets/popup_widget.h"
 #include <algorithm>
 
 Scene::Scene(/* args */)
@@ -34,6 +35,8 @@ void Scene::updateScene()
     if(widgets.size() > 0)
     {
         bShowingBoard = false;
+        if(InputTarget != EInputTarget::EIT_None)
+            InputTarget = EInputTarget::EIT_Widgets;
 
         uBit->display.setDisplayMode(DISPLAY_MODE_GREYSCALE);
 
@@ -52,6 +55,7 @@ void Scene::updateScene()
 void Scene::drawBoard()
 {
     bShowingBoard = true;
+    InputTarget = EInputTarget::EIT_Board;
 
     uBit->display.rotateTo(MICROBIT_DISPLAY_ROTATION_0);
 
@@ -142,6 +146,17 @@ void Scene::destroyObject(Object* object)
     updateScene();
 }
 
+void Scene::removeWidgetFromViewport(Widget* widget)
+{
+    if(!widget)
+        return;
+
+    widgets.erase(std::remove(widgets.begin(), widgets.end(), widget));
+    delete widget;
+
+    updateScene();
+}
+
 void Scene::destroyPiece(Piece* piece)
 {
     if(!piece)
@@ -158,7 +173,16 @@ void Scene::switchTurnFrom(Player* currentPlayer)
         if(player != currentPlayer)
         {
             cursor->setCurrentPlayer(player);
+
+            PopupWidget* myWidget = createWidget<PopupWidget>();
+            myWidget->setDuration(1500);
+            myWidget->pushToViewport();
             return;
         }
     }
+}
+
+void Scene::switchTurn()
+{
+    uBit->serial.printf("Callback worked\r\n");
 }

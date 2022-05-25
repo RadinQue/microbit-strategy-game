@@ -7,6 +7,10 @@ Widget::Widget()
 {
 }
 
+Widget::~Widget()
+{
+}
+
 MicroBitImage Widget::draw()
 {
     return MicroBitImage();
@@ -23,4 +27,12 @@ void Widget::pushToViewport()
         return;
 
     scene->pushWidgetToViewport(this);
+}
+
+void Widget::removeFromViewport()
+{
+    if(!scene)
+        return;
+
+    scene->removeWidgetFromViewport(this);
 }

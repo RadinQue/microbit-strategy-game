@@ -4,6 +4,13 @@
         "chrono": "cpp",
         "vector": "cpp",
         "xmemory": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "concepts": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "xutility": "cpp",
+        "format": "cpp",
+        "*.tcc": "cpp"
     }
 }

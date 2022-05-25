@@ -18,7 +18,7 @@ Player::Player(Scene* scene, ESide playerSide)
 
 void Player::onButtonA()
 {
-    if(!scene->bShowingBoard)
+    if(scene->InputTarget == EInputTarget::EIT_Widgets)
     {
         if(Widget* currWidget = scene->getCurrentWidget())
         {
@@ -30,42 +30,35 @@ void Player::onButtonA()
 
         return;
     }
-
-    if(side == ESide::Pins)
+    else if(scene->InputTarget == EInputTarget::EIT_Board)
     {
-        if(pickedUpPiece)
-            dropPiece();
-    }
-    else
-    {
-        if(!pickedUpPiece)
+        if(side == ESide::Pins)
         {
-            tryPickUpPiece();
+            if(pickedUpPiece)
+                dropPiece();
         }
         else
         {
-            if(tryPutPiece(scene->getCursor()->getLocation()))
+            if(!pickedUpPiece)
             {
-                passTurn();
+                tryPickUpPiece();
             }
             else
-                dropPiece();
+            {
+                if(tryPutPiece(scene->getCursor()->getLocation()))
+                {
+                    passTurn();
+                }
+                else
+                    dropPiece();
+            }
         }
-
-        // // todo: remove
-        // FCastQuery castQuery;
-        // castQuery.filteredObjects.push_back(scene->getCursor());
-
-        // if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
-        // {
-        //     foundObject->destroy();
-        // }
     }
 }
 
 void Player::onLongButtonA()
 {
-    if(!scene->bShowingBoard)
+    if(scene->InputTarget == EInputTarget::EIT_Widgets)
     {
         if(Widget* currWidget = scene->getCurrentWidget())
         {
@@ -77,22 +70,24 @@ void Player::onLongButtonA()
 
         return;
     }
-
-    if(side == ESide::Pins)
+    else if(scene->InputTarget == EInputTarget::EIT_Board)
     {
-    }
-    else
-    {
-        WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
-
-        FCastQuery castQuery;
-        castQuery.filteredObjects.push_back(scene->getCursor());
-        if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
+        if(side == ESide::Pins)
         {
-            if(Piece* piece = static_cast<Piece*>(foundObject))
+        }
+        else
+        {
+            WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
+
+            FCastQuery castQuery;
+            castQuery.filteredObjects.push_back(scene->getCursor());
+            if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
             {
-                infoWidget->init(piece);
-                infoWidget->pushToViewport();
+                if(Piece* piece = static_cast<Piece*>(foundObject))
+                {
+                    infoWidget->init(piece);
+                    infoWidget->pushToViewport();
+                }
             }
         }
     }
@@ -100,7 +95,7 @@ void Player::onLongButtonA()
 
 void Player::onButtonB()
 {
-    if(!scene->bShowingBoard)
+    if(scene->InputTarget == EInputTarget::EIT_Widgets)
     {
         if(Widget* currWidget = scene->getCurrentWidget())
         {
@@ -112,42 +107,44 @@ void Player::onButtonB()
 
         return;
     }
-
-    if(side == ESide::Pins)
+    else if(scene->InputTarget == EInputTarget::EIT_Board)
     {
-        if(!pickedUpPiece)
+        if(side == ESide::Pins)
         {
-            tryPickUpPiece();
+            if(!pickedUpPiece)
+            {
+                tryPickUpPiece();
+            }
+            else
+            {
+                if(tryPutPiece(scene->getCursor()->getLocation()))
+                {
+                    passTurn();
+                }
+                else
+                    dropPiece();
+            }
+
+            // // todo: remove
+            // FCastQuery castQuery;
+            // castQuery.filteredObjects.push_back(scene->getCursor());
+
+            // if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
+            // {
+            //     foundObject->destroy();
+            // }
         }
         else
         {
-            if(tryPutPiece(scene->getCursor()->getLocation()))
-            {
-                passTurn();
-            }
-            else
+            if(pickedUpPiece)
                 dropPiece();
         }
-
-        // // todo: remove
-        // FCastQuery castQuery;
-        // castQuery.filteredObjects.push_back(scene->getCursor());
-
-        // if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
-        // {
-        //     foundObject->destroy();
-        // }
-    }
-    else
-    {
-        if(pickedUpPiece)
-            dropPiece();
     }
 }
 
 void Player::onLongButtonB()
 {
-    if(!scene->bShowingBoard)
+    if(scene->InputTarget == EInputTarget::EIT_Widgets)
     {
         if(Widget* currWidget = scene->getCurrentWidget())
         {
@@ -159,24 +156,26 @@ void Player::onLongButtonB()
 
         return;
     }
-
-    if(side == ESide::Pins)
+    else if(scene->InputTarget == EInputTarget::EIT_Board)
     {
-        WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
-
-        FCastQuery castQuery;
-        castQuery.filteredObjects.push_back(scene->getCursor());
-        if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
+        if(side == ESide::Pins)
         {
-            if(Piece* piece = static_cast<Piece*>(foundObject))
+            WPieceInfo* infoWidget = scene->createWidget<WPieceInfo>();
+
+            FCastQuery castQuery;
+            castQuery.filteredObjects.push_back(scene->getCursor());
+            if(Object* foundObject = scene->getObjectAtLocation(scene->getCursor()->getLocation(), castQuery))
             {
-                infoWidget->init(piece);
-                infoWidget->pushToViewport();
+                if(Piece* piece = static_cast<Piece*>(foundObject))
+                {
+                    infoWidget->init(piece);
+                    infoWidget->pushToViewport();
+                }
             }
         }
-    }
-    else
-    {
+        else
+        {
+        }
     }
 }
 

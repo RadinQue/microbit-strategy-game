@@ -8,6 +8,7 @@ class Widget
 {
 public:
     Widget(/* args */);
+    virtual ~Widget();
     
     virtual MicroBitImage draw();
     virtual void tick(int deltaTime);
@@ -17,7 +18,8 @@ public:
     virtual void onLongBack() {}
     void setScene(Scene* newScene) { scene = newScene; }
 
-    void pushToViewport();
+    virtual void pushToViewport();
+    void removeFromViewport();
 
 protected:
     Scene* scene;

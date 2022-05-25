@@ -20,7 +20,7 @@ Cursor::Cursor(Point location, Scene* scene)
     // SETUP
     this->scene = scene;
     this->location = location;
-    opacity = 32;
+    opacity = 16;
     zOrder = 1;
     longPressed = false;
 }
@@ -103,7 +103,7 @@ void Cursor::tick(int deltaTime)
 {
     Object::tick(deltaTime);
 
-    if(!scene->bShowingBoard)
+    if(scene->InputTarget != EInputTarget::EIT_Board)
         return;
 
     elapsedTime += deltaTime;
