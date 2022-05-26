@@ -12,6 +12,7 @@ class Piece : public Object
 public:
     Piece() {}
     Piece(const Point& location, Scene* scene);
+    ~Piece();
 
     virtual bool canMoveAtLocation(const Point& location);
     bool canPutPieceOn(const Point& location);

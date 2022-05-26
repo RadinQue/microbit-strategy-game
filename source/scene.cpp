@@ -235,5 +235,6 @@ void Scene::switchTurnFrom(Player* currentPlayer)
 
 bool Scene::isOutOfBounds(const Point& point)
 {
+    uBit->serial.printf("[%d, %d]\r\n", point.x, point.y);
     return point.x < 0 || point.y < 0 || point.x > 4 || point.y > 4;
 }

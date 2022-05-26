@@ -10,6 +10,11 @@ Piece::Piece(const Point& location, Scene* scene)
     this->location = location;
 }
 
+Piece::~Piece()
+{
+    destroyMoveIndicators();
+}
+
 bool Piece::canMoveAtLocation(const Point& location)
 {
     possibleMoves.clear();

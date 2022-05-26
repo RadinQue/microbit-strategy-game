@@ -25,7 +25,7 @@ std::vector<Point> Pathfinder::calculateDestinations(Scene* scene, Piece* target
     {
         uint8_t range = instruction.range == -1 ? 4 : instruction.range;
 
-        for (uint8_t i = 0; i <= range; ++i)
+        for (uint8_t i = 0; i < range; ++i)
         {
             if(scene->isOutOfBounds(target->getLocation() + instruction.direction * (i + 1)))
                 break;
@@ -46,8 +46,10 @@ std::vector<Point> Pathfinder::calculateDestinations(Scene* scene, Piece* target
                 if(pieceAtLocation->getOwner() != target->getOwner())
                     points.push_back(checkLocation); // if so, it's still a valid move
 
-                // but then break out of this path
-                break;
+                // but then if can't pass through,
+                // break out of this path
+                if(!instruction.bPassThrough)
+                    break;
             }
         }
     }

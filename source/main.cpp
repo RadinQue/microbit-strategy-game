@@ -3,6 +3,7 @@
 #include "fmath.h"
 #include "pieces/pawn.h"
 #include "pieces/rook.h"
+#include "pieces/knight.h"
 
 #include "player.h"
 
@@ -25,7 +26,7 @@ int main()
     scene->grantPlayerPiece<Pawn>(Point(2, 0), P2);
     scene->grantPlayerPiece<Rook>(Point(3, 0), P2);
 
-    scene->grantPlayerPiece<Pawn>(Point(0, 4), P1);
+    scene->grantPlayerPiece<Knight>(Point(0, 4), P1);
     scene->grantPlayerPiece<Rook>(Point(1, 4), P1);
     scene->grantPlayerPiece<Pawn>(Point(2, 4), P1);
     scene->grantPlayerPiece<Rook>(Point(3, 4), P1);
