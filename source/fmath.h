@@ -51,6 +51,13 @@ struct Point
 		return Point(scalar * x, scalar * y);
 	}
 
+	Point& operator*=(const int& scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
 	bool operator==(const Point& rhs) const
 	{
 		return rhs.x == x && rhs.y == y;

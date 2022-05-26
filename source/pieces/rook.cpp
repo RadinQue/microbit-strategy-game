@@ -1,4 +1,5 @@
 #include "rook.h"
+#include "pathfinding/path_instruction.h"
 #include "MicroBitImage.h"
 
 
@@ -16,17 +17,14 @@ Rook::Rook(const Point& location, Scene* scene)
 
 void Rook::calculatePossibleMoves()
 {
-    possibleMoves.clear();
-    for (int8_t i = 1; i <= 4; ++i)
-    {
-        // vertical
-        possibleMoves.push_back(getLocation() + (getForwardVector() * i));
-        possibleMoves.push_back(getLocation() + (getForwardVector() * -i));
+    std::vector<PathInstruction> instructions;
 
-        // horizontal
-        possibleMoves.push_back(getLocation() + (getRightVector() * i));
-        possibleMoves.push_back(getLocation() + (getRightVector() * -i));
-    }
+    instructions.push_back(PathInstruction(getForwardVector(), -1, false));
+    instructions.push_back(PathInstruction(getForwardVector() *= -1, -1, false));
+    instructions.push_back(PathInstruction(getRightVector(), -1, false));
+    instructions.push_back(PathInstruction(getRightVector() *= -1, -1, false));
+
+    Piece::calculatePossibleMoves(instructions);
 }
 
 MicroBitImage Rook::classImage()

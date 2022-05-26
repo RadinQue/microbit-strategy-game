@@ -2,6 +2,7 @@
 #include "player.h"
 #include "scene.h"
 #include "movement_indicator.h"
+#include "pathfinding/pathfinder.h"
 
 Piece::Piece(const Point& location, Scene* scene)
 {
@@ -11,6 +12,7 @@ Piece::Piece(const Point& location, Scene* scene)
 
 bool Piece::canMoveAtLocation(const Point& location)
 {
+    possibleMoves.clear();
     calculatePossibleMoves();
 
     for (Point loc : possibleMoves)
@@ -20,6 +22,11 @@ bool Piece::canMoveAtLocation(const Point& location)
     }
 
     return false;
+}
+
+bool Piece::canPutPieceOn(const Point& location)
+{
+    return std::find(possibleMoves.begin(), possibleMoves.end(), location) != possibleMoves.end();
 }
 
 void Piece::start()
@@ -60,6 +67,11 @@ void Piece::dealDamage(Piece* target)
 void Piece::onDamageReceived(int dmg, Piece* instigator/* = nullptr*/)
 {
     health -= dmg;
+}
+
+void Piece::calculatePossibleMoves(const std::vector<PathInstruction>& instructions)
+{
+    possibleMoves = Pathfinder::calculateDestinations(scene, this, instructions);
 }
 
 void Piece::spawnMoveIndicators()

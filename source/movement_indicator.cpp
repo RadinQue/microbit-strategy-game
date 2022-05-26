@@ -4,6 +4,7 @@ MovementIndicator::MovementIndicator(const Point& loc, Scene* scene)
 {
     this->scene = scene;
     this->location = loc;
+    this->bHasCollision = false;
 }
 
 void MovementIndicator::tick(int deltaTime)

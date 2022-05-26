@@ -96,10 +96,11 @@ public:
 
     std::vector<Object*> getObjects() const { return objects; }
 
-    bool spaceOccupied(const Point& location, FCastQuery castQuery = FCastQuery()) const;
-    std::vector<Object*> getObjectsAtLocation(const Point& location, FCastQuery castQuery = FCastQuery()) const;
-    Object* getObjectAtLocation(const Point& location, FCastQuery castQuery = FCastQuery()) const;
+    bool spaceOccupied(const Point& location, const FCastQuery& castQuery = FCastQuery()) const;
+    std::vector<Object*> getObjectsAtLocation(const Point& location, const FCastQuery& castQuery = FCastQuery()) const;
+    Object* getObjectAtLocation(const Point& location, const FCastQuery& castQuery = FCastQuery()) const;
     Object* getObjectAtLocationOfType(const Point& location, EMessageType type) const;
+    Object* getObjectAtLocationOfType(const Point& location, EMessageType type, const FCastQuery& castQuery) const;
 
     void updateScene();
     bool isDirty() const { return dirty; }
@@ -120,6 +121,8 @@ public:
         player->addPiece(newPiece);
         return newPiece;
     }
+
+    bool isOutOfBounds(const Point& point);
 
     void setCursor(class Cursor* newCursor) { cursor = newCursor; }
     Cursor* getCursor() const { return cursor; }

@@ -20,6 +20,8 @@ public:
 
     void setOpacity(int opacity) { this->opacity = opacity; }
     void setVisibility(bool visible);
+
+    bool hasCollision() const { return bHasCollision; }
     
     virtual void start();
     virtual void tick(int deltaTime);
@@ -37,6 +39,7 @@ protected:
     Scene* scene;
 
     bool bVisible = true;
+    bool bHasCollision = true;
 };
 
 #endif
