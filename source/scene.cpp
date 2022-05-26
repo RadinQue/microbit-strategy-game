@@ -81,44 +81,59 @@ void Scene::drawBoard()
     }
 }
 
-bool Scene::spaceOccupied(const Point& location, FCastQuery castQuery) const
+bool Scene::spaceOccupied(const Point& location, const FCastQuery& castQuery) const
 {
     for (Object* obj : objects)
     {
-        if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+        if(!obj->hasCollision())
             continue;
 
         if (obj->getLocation() == location)
+        {
+            if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+                continue;
+
             return true;
+        }
     }
 
     return false;
 }
 
-std::vector<Object*> Scene::getObjectsAtLocation(const Point& location, FCastQuery castQuery) const
+std::vector<Object*> Scene::getObjectsAtLocation(const Point& location, const FCastQuery& castQuery) const
 {
     std::vector<Object*> foundObjects;
     for(Object* obj : objects)
     {
-        if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+        if(!obj->hasCollision())
             continue;
 
         if(obj->getLocation() == location)
+        {
+            if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+                continue;
+
             foundObjects.push_back(obj);
+        }
     }
 
     return foundObjects;
 }
 
-Object* Scene::getObjectAtLocation(const Point& location, FCastQuery castQuery) const
+Object* Scene::getObjectAtLocation(const Point& location, const FCastQuery& castQuery) const
 {
     for (Object* obj : objects)
     {
-        if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+        if(!obj->hasCollision())
             continue;
 
         if(obj->getLocation() == location)
+        {
+            if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+                continue;
+
             return obj;
+        }
     }
 
     return nullptr;
@@ -128,8 +143,30 @@ Object* Scene::getObjectAtLocationOfType(const Point& location, EMessageType typ
 {
     for (Object* obj : objects)
     {
+        if(!obj->hasCollision())
+            continue;
+
         if(obj->getLocation() == location && obj->getMessageType() == type)
             return obj;
+    }
+
+    return nullptr;
+}
+
+Object* Scene::getObjectAtLocationOfType(const Point& location, EMessageType type, const FCastQuery& castQuery) const
+{
+    for (Object* obj : objects)
+    {
+        if(!obj->hasCollision())
+            continue;
+
+        if(obj->getLocation() == location && obj->getMessageType() == type)
+        {
+            if(std::find(castQuery.filteredObjects.begin(), castQuery.filteredObjects.end(), obj) != castQuery.filteredObjects.end())
+                continue;
+
+            return obj;
+        }
     }
 
     return nullptr;
@@ -194,4 +231,9 @@ void Scene::switchTurnFrom(Player* currentPlayer)
             return;
         }
     }
+}
+
+bool Scene::isOutOfBounds(const Point& point)
+{
+    return point.x < 0 || point.y < 0 || point.x > 4 || point.y > 4;
 }

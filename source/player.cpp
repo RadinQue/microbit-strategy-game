@@ -246,10 +246,13 @@ bool Player::tryPutPiece(const Point& location)
     if(scene->getCursor() == nullptr)
         return false;
 
-    if(!pickedUpPiece->canMoveAtLocation(location))
+    if(!pickedUpPiece->canPutPieceOn(location))
         return false;
 
-    Piece* foundPiece = static_cast<Piece*>(scene->getObjectAtLocationOfType(location, EMessageType::EMT_Piece));
+    FCastQuery castQuery;
+    castQuery.filteredObjects.push_back(scene->getCursor());
+    
+    Piece* foundPiece = static_cast<Piece*>(scene->getObjectAtLocationOfType(location, EMessageType::EMT_Piece, castQuery));
     if(foundPiece)
     {
         if(foundPiece->getOwner() != pickedUpPiece->getOwner())

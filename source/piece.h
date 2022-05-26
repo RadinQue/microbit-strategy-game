@@ -14,7 +14,9 @@ public:
     Piece(const Point& location, Scene* scene);
 
     virtual bool canMoveAtLocation(const Point& location);
+    bool canPutPieceOn(const Point& location);
     virtual void calculatePossibleMoves() = 0;
+    virtual void calculatePossibleMoves(const std::vector<struct PathInstruction>& instructions);
 
     void spawnMoveIndicators();
     void destroyMoveIndicators();
