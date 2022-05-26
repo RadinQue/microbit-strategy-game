@@ -1,7 +1,6 @@
 #include "pawn.h"
+#include "pathfinding/path_instruction.h"
 #include "MicroBitImage.h"
-
-
 
 
 Pawn::Pawn(const Point& location, Scene* scene)
@@ -9,8 +8,8 @@ Pawn::Pawn(const Point& location, Scene* scene)
     this->scene = scene;
     this->location = location;
 
-    maxHealth = 6;
-    maxAttack = 9;
+    maxHealth = 3;
+    maxAttack = 2;
 }
 
 void Pawn::start()
@@ -21,8 +20,11 @@ void Pawn::start()
 
 void Pawn::calculatePossibleMoves()
 {
-    possibleMoves.clear();
-    possibleMoves.push_back(getLocation() + getForwardVector());
+    std::vector<PathInstruction> instructions;
+
+    instructions.push_back(PathInstruction(getForwardVector(), 1, false));
+
+    Piece::calculatePossibleMoves(instructions);
 }
 
 MicroBitImage Pawn::classImage()
