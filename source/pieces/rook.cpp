@@ -11,8 +11,8 @@ Rook::Rook(const Point& location, Scene* scene)
     this->scene = scene;
     this->location = location;
 
-    maxHealth = 8;
-    maxAttack = 2;
+    maxHealth.value = 8;
+    maxAttack.value = 2;
 }
 
 void Rook::calculatePossibleMoves()

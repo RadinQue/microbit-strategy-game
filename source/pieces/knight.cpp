@@ -11,8 +11,8 @@ Knight::Knight(const Point& location, Scene* scene)
     this->scene = scene;
     this->location = location;
 
-    maxHealth = 4;
-    maxAttack = 3;
+    maxHealth.value = 4;
+    maxAttack.value = 3;
 }
 
 void Knight::calculatePossibleMoves()

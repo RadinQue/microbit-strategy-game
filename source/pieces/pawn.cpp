@@ -8,14 +8,19 @@ Pawn::Pawn(const Point& location, Scene* scene)
     this->scene = scene;
     this->location = location;
 
-    maxHealth = 3;
-    maxAttack = 2;
+    maxHealth.value = 3;
+    maxAttack.value = 2;
 }
 
 void Pawn::start()
 {
     Piece::start();
 
+    health = StatusSystem::FAttribute("health", 5);
+    attack = StatusSystem::FAttribute("attack", 3);
+
+    maxHealth = StatusSystem::FAttribute("max_health", 5);
+    maxAttack = StatusSystem::FAttribute("max_attack", 3);
 }
 
 void Pawn::calculatePossibleMoves()

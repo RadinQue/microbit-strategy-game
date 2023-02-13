@@ -36,8 +36,10 @@ bool Piece::canPutPieceOn(const Point& location)
 
 void Piece::start()
 {
-    health = maxHealth;
-    attack = maxAttack;
+    attributes.push_back(&health);
+    attributes.push_back(&attack);
+    attributes.push_back(&maxHealth);
+    attributes.push_back(&maxAttack);
 }
 
 void Piece::destroy()
@@ -66,12 +68,12 @@ void Piece::dealDamage(Piece* target)
     if(!target)
         return;
 
-    target->onDamageReceived(attack);
+    target->onDamageReceived(attack.value);
 }
 
 void Piece::onDamageReceived(int dmg, Piece* instigator/* = nullptr*/)
 {
-    health -= dmg;
+    health.value -= dmg;
 }
 
 void Piece::calculatePossibleMoves(const std::vector<PathInstruction>& instructions)
@@ -100,3 +102,125 @@ void Piece::destroyMoveIndicators()
 
     moveIndicators.clear();
 }
+
+// Status System
+
+void Piece::ApplyStatusEffectToSelf(StatusSystem::StatusEffect* effect)
+{
+    ApplyEffect(effect);
+    
+    if(effect->timingPolicy == StatusSystem::ETimingPolicy::TP_Instant)
+        return;
+
+    activeEffects.push_back(effect);
+}
+
+void Piece::RemoveStatusEffectFromSelf(StatusSystem::StatusEffect* effect)
+{
+    auto foundEffect = std::find(activeEffects.begin(), activeEffects.end(), effect);
+    if(foundEffect != activeEffects.end())
+    {
+        RevertEffect(*foundEffect);
+    }
+}
+
+void Piece::RemoveStatusEffectFromTarget(StatusSystem::StatusEffect* effect, Piece* target)
+{
+    if(!target)
+        return;
+
+    target->RemoveStatusEffectFromSelf(effect);
+}
+
+void Piece::TickEffect(StatusSystem::StatusEffect* effect)
+{
+    if(effect->timingPolicy == StatusSystem::ETimingPolicy::TP_Duration)
+    {
+        effect->duration--;
+        return;
+    }
+
+    if(effect->timingPolicy == StatusSystem::ETimingPolicy::TP_Instant)
+    {
+        ApplyEffect(effect);
+        return;
+    }
+}
+
+void Piece::ApplyEffect(StatusSystem::StatusEffect* effect)
+{
+    for (const StatusSystem::FModifier& modifier : effect->modifiers)
+    {
+        auto foundAttribute = std::find_if(attributes.begin(), attributes.end(), [&modifier] (const StatusSystem::FAttribute* att)
+        {
+            return att->name == modifier.attributeName;
+        });
+        if(foundAttribute != attributes.end())
+            ApplyModifierOnAttribute(modifier, *foundAttribute);
+    }
+}
+
+void Piece::RevertEffect(StatusSystem::StatusEffect* effect)
+{
+    for (const StatusSystem::FModifier& modifier : effect->modifiers)
+    {
+        auto foundAttribute = std::find_if(attributes.begin(), attributes.end(), [&modifier] (const StatusSystem::FAttribute* att)
+        {
+            return att->name == modifier.attributeName;
+        });
+        if(foundAttribute != attributes.end())
+            RevertModifierOnAttribute(modifier, *foundAttribute);
+    }
+}
+
+void Piece::ApplyModifierOnAttribute(const StatusSystem::FModifier& modifier, StatusSystem::FAttribute* attribute)
+{
+    switch (modifier.operation)
+    {
+    case StatusSystem::Add:
+        attribute->value += modifier.magnitude;
+        break;
+
+    case StatusSystem::Multiply:
+        attribute->value *= modifier.magnitude;
+        break;
+
+    case StatusSystem::Divide:
+        attribute->value /= modifier.magnitude;
+        break;
+
+    case StatusSystem::Override:
+        attribute->value = modifier.magnitude;
+        break;
+    
+    default:
+        break;
+    }
+}
+
+void Piece::RevertModifierOnAttribute(const StatusSystem::FModifier& modifier, StatusSystem::FAttribute* attribute)
+{
+    switch (modifier.operation)
+    {
+    case StatusSystem::Add:
+        attribute->value += modifier.magnitude;
+        break;
+
+    case StatusSystem::Multiply:
+        attribute->value *= modifier.magnitude;
+        break;
+
+    case StatusSystem::Divide:
+        attribute->value /= modifier.magnitude;
+        break;
+
+    case StatusSystem::Override:
+        attribute->value = attribute->baseValue;
+        break;
+    
+    default:
+        break;
+    }
+}
+
+// -- Status System

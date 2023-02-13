@@ -2,6 +2,7 @@
 #define PIECE_H
 
 #include "object.h"
+#include "status_system/status_types.h"
 #include <vector>
 
 class MicroBitImage;
@@ -27,11 +28,16 @@ public:
     virtual void start() override;
     virtual void destroy() override;
 
-    int8_t getHealth() const { return health; }
-    int8_t getAttack() const { return attack; }
+    int8_t getHealth() const { return health.value; }
+    int8_t getAttack() const { return attack.value; }
 
-    int8_t getMaxHealth() const { return maxHealth; }
-    int8_t getMaxAttack() const { return maxAttack; }
+    int8_t getMaxHealth() const { return maxHealth.value; }
+    int8_t getMaxAttack() const { return maxAttack.value; }
+
+    StatusSystem::FAttribute& getHealthAttribute() { return health; }
+    StatusSystem::FAttribute& getAttackAttribute() { return attack; }
+    StatusSystem::FAttribute& getMaxHealthAttribute() { return maxHealth; }
+    StatusSystem::FAttribute& getMaxAttackAttribute() { return maxAttack; }
 
     void dealDamage(Piece* target);
     void onDamageReceived(int dmg, Piece* instigator = nullptr);
@@ -43,17 +49,45 @@ public:
 
     virtual EMessageType getMessageType() override { return EMessageType::EMT_Piece; };
 
-protected:
-    int8_t health;
-    int8_t attack;
+    // Status System
 
-    int8_t maxHealth;
-    int8_t maxAttack;
+    void ApplyStatusEffectToSelf(StatusSystem::StatusEffect* effect);
+    void ApplyStatusEffectToTarget(StatusSystem::StatusEffect* effect, Piece* target);
+    void RemoveStatusEffectFromSelf(StatusSystem::StatusEffect* effect);
+    void RemoveStatusEffectFromTarget(StatusSystem::StatusEffect* effect, Piece* target);
+
+    // -- Status System
+
+protected:
+    StatusSystem::FAttribute health;
+    StatusSystem::FAttribute attack;
+
+    StatusSystem::FAttribute maxHealth;
+    StatusSystem::FAttribute maxAttack;
 
     Player* owner;
 
     std::vector<Point> possibleMoves;
     std::vector<class MovementIndicator*> moveIndicators;
+
+    // Status System
+
+    std::vector<StatusSystem::StatusEffect*> activeEffects;
+
+    // -- Status System
+
+private:
+    // Status System
+
+    std::vector<StatusSystem::FAttribute*> attributes;
+
+    void TickEffect(StatusSystem::StatusEffect* effect);
+    void ApplyEffect(StatusSystem::StatusEffect* effect);
+    void RevertEffect(StatusSystem::StatusEffect* effect);
+    void ApplyModifierOnAttribute(const StatusSystem::FModifier& modifier, StatusSystem::FAttribute* attribute);
+    void RevertModifierOnAttribute(const StatusSystem::FModifier& modifier, StatusSystem::FAttribute* attribute);
+
+    // -- Status System
 
 };
 
